@@ -3,18 +3,18 @@ package config
 import "github.com/go-ini/ini"
 
 type Jdbc struct {
-	Driver string `ini:"driver"`
-	Url string `ini:"url"`
+	Driver   string `ini:"driver"`
+	Url      string `ini:"url"`
 	UserName string `ini:"username"`
 	Password string `ini:"password"`
-	Table string `ini:"table"`
+	Table    string `ini:"table"`
 }
 
 type Pkg struct {
 	Model string `ini:"model"`
-	Dao string `ini:"dao"`
-	Serv string `ini:"serv"`
-	Xml string `ini:"xml"`
+	Dao   string `ini:"dao"`
+	Serv  string `ini:"serv"`
+	Xml   string `ini:"xml"`
 }
 
 type Out struct {
@@ -23,20 +23,20 @@ type Out struct {
 
 type Proj struct {
 	Target string `ini:"target"`
-	Over string `ini:"over"`
+	Over   string `ini:"over"`
 }
 
 type Config struct {
 	Jdbc *Jdbc
-	Pkg *Pkg
-	Out *Out
+	Pkg  *Pkg
+	Out  *Out
 	Proj *Proj
 }
 
-func GetContent() *Config {
-	cfg, err := ini.Load("config.ini")
+func GetContent(path string) (*Config, error) {
+	cfg, err := ini.Load(path)
 	if err != nil {
-
+		return nil, err
 	}
 	j := new(Jdbc)
 	err = cfg.Section("jdbc").MapTo(j)
@@ -46,6 +46,6 @@ func GetContent() *Config {
 	err = cfg.Section("out").MapTo(o)
 	pj := new(Proj)
 	err = cfg.Section("proj").MapTo(pj)
-	c := Config{j,p,o,pj}
-	return &c
+	c := Config{j, p, o, pj}
+	return &c, err
 }
