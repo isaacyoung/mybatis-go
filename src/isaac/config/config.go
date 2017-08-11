@@ -1,6 +1,9 @@
 package config
 
-import "github.com/go-ini/ini"
+import (
+	"github.com/go-ini/ini"
+	"strings"
+)
 
 type Jdbc struct {
 	Driver   string `ini:"driver"`
@@ -31,6 +34,11 @@ type Config struct {
 	Pkg  *Pkg
 	Out  *Out
 	Proj *Proj
+}
+
+func (c *Config) GetDataBaseFromUrl() string {
+	url := c.Jdbc.Url
+	return url[strings.LastIndex(url,"/") + 1:strings.Index(url, "?")]
 }
 
 func GetContent(path string) (*Config, error) {
