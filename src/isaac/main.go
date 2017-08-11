@@ -30,7 +30,7 @@ func main() {
 		fmt.Println(t.Name + " " + t.Comment)
 	}
 
-	columns, err := jdbc.GetColumns(con)
+	columns, err := jdbc.GetColumns(con, con.Jdbc.Table)
 	if err != nil {
 		fmt.Println(err)
 		return

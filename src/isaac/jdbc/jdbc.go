@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"isaac/config"
-	"fmt"
 )
 
 type Connect struct {
@@ -87,9 +86,9 @@ type Column struct {
 	Comment   string
 }
 
-func GetColumns(config *config.Config) ([]Column, error) {
+func GetColumns(config *config.Config, table string) ([]Column, error) {
 	str := "SELECT TABLE_NAME,COLUMN_NAME,COLUMN_KEY,DATA_TYPE,IFNULL(NUMERIC_SCALE,0) AS NUMERIC_SCALE,IFNULL(CHARACTER_MAXIMUM_LENGTH,0) AS CHARACTER_MAXIMUM_LENGTH,COLUMN_COMMENT FROM information_schema.`COLUMNS` WHERE TABLE_SCHEMA=? AND TABLE_NAME=?"
-	return getColumns(config, str, config.GetDataBaseFromUrl(),config.Jdbc.Table)
+	return getColumns(config, str, config.GetDataBaseFromUrl(), table)
 }
 
 func getColumns(config *config.Config, q string, v string, v2 string) ([]Column, error) {
@@ -99,8 +98,6 @@ func getColumns(config *config.Config, q string, v string, v2 string) ([]Column,
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(q)
-	fmt.Println(v)
 
 	rows, err := connect.db.Query(q, v, v2)
 
