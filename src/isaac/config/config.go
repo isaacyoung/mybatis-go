@@ -41,7 +41,7 @@ func (c *Config) GetDataBaseFromUrl() string {
 	return url[strings.LastIndex(url,"/") + 1:strings.Index(url, "?")]
 }
 
-func GetContent(path string) (*Config, error) {
+func GetConfig(path string) (*Config, error) {
 	cfg, err := ini.Load(path)
 	if err != nil {
 		return nil, err

@@ -99,7 +99,12 @@ func getColumns(config *config.Config, q string, v string, v2 string) ([]Column,
 		return nil, err
 	}
 
-	rows, err := connect.db.Query(q, v, v2)
+	var rows *sql.Rows
+	if v2 != "" {
+		rows, err = connect.db.Query(q, v, v2)
+	} else {
+		rows, err = connect.db.Query(q, v)
+	}
 
 	defer rows.Close()
 	if err != nil {
