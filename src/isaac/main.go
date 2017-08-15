@@ -1,3 +1,7 @@
+
+// cd src/isaac
+// go run main.go
+
 package main
 
 import (
@@ -17,6 +21,8 @@ func main() {
 		fmt.Println("not get config values")
 		return
 	}
+
+	con.ClearTarget()
 
 	// TODO code
 

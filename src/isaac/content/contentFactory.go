@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"isaac/jdbc"
 	"isaac/config"
+	"os"
 )
 
 type TableInfo struct {
@@ -15,6 +16,10 @@ type TableInfo struct {
 type Content struct {
 	Config *config.Config
 	Tables []TableInfo
+}
+
+func (c *Content) ClearTarget() error {
+	return os.RemoveAll(c.Config.Out.Target)
 }
 
 func Build(path string) (*Content, error) {
