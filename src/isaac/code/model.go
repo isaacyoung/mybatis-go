@@ -12,9 +12,7 @@ func Model(con *content.Content) {
 	os.MkdirAll(con.GetModelPath(), os.ModeDir)
 
 	for _, t := range con.Tables {
-		className := content.GetModelName(t.Table.Name)
-
-		file, err := os.Create(con.GetModelPath() + "/" + className +  ".java")
+		file, err := os.Create(con.GetModelPath() + "/" + t.ModelName +  ".java")
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -36,7 +34,7 @@ func Model(con *content.Content) {
 		file.WriteString("/**\n")
 		file.WriteString(" * " + t.Table.Comment + "\n")
 		file.WriteString(" */\n")
-		file.WriteString("public class " + className + " {\n")
+		file.WriteString("public class " + t.ModelName + " {\n")
 
 		for _, c := range t.Columns {
 			file.WriteString("    /**\n")
@@ -51,11 +49,11 @@ func Model(con *content.Content) {
 		file.WriteString("    private List sqlCondition;\n\n")
 
 		for _, c := range t.Columns {
-			file.WriteString("    public " + c.ShortJavaType + " " + content.GetFieldGetter(c.Column.Name) + "() {\n")
+			file.WriteString("    public " + c.ShortJavaType + " " + c.GetFieldGetter() + "() {\n")
 			file.WriteString("        return this." + c.Field + ";\n")
 			file.WriteString("    }\n\n")
 
-			file.WriteString("    public void " + content.GetFieldSetter(c.Column.Name) + "(" + c.ShortJavaType + " _" + c.Field + ") {\n")
+			file.WriteString("    public void " + c.GetFieldSetter() + "(" + c.ShortJavaType + " _" + c.Field + ") {\n")
 			file.WriteString("        this." + c.Field + " = _" + c.Field + ";\n")
 			file.WriteString("    }\n\n")
 		}

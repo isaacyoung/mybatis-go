@@ -18,14 +18,10 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	if con.Config.Jdbc.Driver != "com.mysql.jdbc.Driver" {
-		fmt.Println("not get config values")
-		return
-	}
 
 	con.ClearTarget()
 
 	// TODO code
 	code.Model(con)
-
+	code.Dao(con)
 }

@@ -36,13 +36,25 @@ func (c *Content) GetModelPath() string {
 	return c.GetTargetPath() + packageToPath(c.Config.Pkg.Model)
 }
 
-var jdbcFlag = "_@$# /&"
-
-func GetModelName(tableName string) string {
-	return GetFieldName(tableName, true)
+func (c *Content) GetDaoPath() string {
+	return c.GetTargetPath() + packageToPath(c.Config.Pkg.Dao)
 }
 
-func GetFieldName(name string, fileUpper bool) string {
+var jdbcFlag = "_@$# /&"
+
+func (t *TableInfo) getModelName() string {
+	return getFieldName(t.Table.Name, true)
+}
+
+func (t *TableInfo) GetDaoName() string {
+	return t.ModelName + "Mapper"
+}
+
+func (c *ColumnInfo) getFieldName() string {
+	return getFieldName(c.Column.Name, false)
+}
+
+func getFieldName(name string, firstUpper bool) string {
 	var result string
 	var nextUpperCase = false
 	for _, v := range name {
@@ -55,18 +67,20 @@ func GetFieldName(name string, fileUpper bool) string {
 			result += string(v)
 		}
 	}
-	if fileUpper {
+	if firstUpper {
 		result = strings.ToUpper(result[0:1]) + result[1:]
 	}
 	return result
 }
 
-func GetFieldGetter(name string) string {
-	return "get" + GetModelName(name)
+func (c *ColumnInfo) GetFieldGetter() string {
+	name := c.getFieldName()
+	return "get" + strings.ToUpper(name[0:1]) + name[1:]
 }
 
-func GetFieldSetter(name string) string {
-	return "set" + GetModelName(name)
+func (c *ColumnInfo) GetFieldSetter() string {
+	name := c.getFieldName()
+	return "set" + strings.ToUpper(name[0:1]) + name[1:]
 }
 
 func packageToPath(pkg string) string {
@@ -118,12 +132,13 @@ func getTables(config *config.Config, content *Content) ([]TableInfo, error) {
 	for _, t := range tables {
 		tableInfo := TableInfo{}
 		tableInfo.Table = t
+		tableInfo.ModelName = tableInfo.getModelName()
 		columnList := []ColumnInfo{}
 		for _, c := range columns {
 			if t.Name == c.TableName {
 				columnInfo := ColumnInfo{}
 				columnInfo.Column = c
-				columnInfo.Field = GetFieldName(c.Name, false)
+				columnInfo.Field = columnInfo.getFieldName()
 				columnInfo.JdbcType = columnInfo.getJdbcType()
 				columnInfo.JavaType = columnInfo.getJavaType()
 				columnInfo.ShortJavaType = columnInfo.getShortJavaType()
