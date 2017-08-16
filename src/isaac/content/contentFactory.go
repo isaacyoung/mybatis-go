@@ -7,19 +7,20 @@ import (
 	"isaac/config"
 	"os"
 	"strings"
+	"io"
 )
 
 type TableInfo struct {
-	Table jdbc.Table
+	Table     jdbc.Table
 	ModelName string
-	Columns []ColumnInfo
+	Columns   []ColumnInfo
 }
 
 type ColumnInfo struct {
-	Column jdbc.Column
-	Field string
-	JdbcType string
-	JavaType string
+	Column        jdbc.Column
+	Field         string
+	JdbcType      string
+	JavaType      string
 	ShortJavaType string
 }
 
@@ -50,6 +51,99 @@ func (c *Content) GetServiceImplPath() string {
 
 func (c *Content) GetXmlPath() string {
 	return c.GetTargetPath() + packageToPath(c.Config.Pkg.Xml)
+}
+
+func (c *Content) IsOver() bool {
+	return c.Config.Proj.Over == "true"
+}
+
+func (c *Content) CopyToProject() {
+	fromPath := c.GetTargetPath()
+	toPath := c.GetProjectPath()
+
+	toJavaPath := toPath + packageToPath("src.main.java.com")
+	toResourcePath := toPath + packageToPath("src.main.resources.mapper")
+
+	os.MkdirAll(toJavaPath, os.ModeDir)
+	err := CopyDir(fromPath+"com", toJavaPath)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	os.MkdirAll(toResourcePath, os.ModeDir)
+	CopyDir(fromPath+"mapper", toResourcePath)
+}
+
+func CopyDir(source string, dest string) (err error) {
+
+	// get properties of source dir
+	sourceinfo, err := os.Stat(source)
+	if err != nil {
+		return err
+	}
+
+	// create dest dir
+
+	err = os.MkdirAll(dest, sourceinfo.Mode())
+	if err != nil {
+		return err
+	}
+
+	directory, _ := os.Open(source)
+
+	objects, err := directory.Readdir(-1)
+
+	for _, obj := range objects {
+
+		sourcefilepointer := source + "/" + obj.Name()
+
+		destinationfilepointer := dest + "/" + obj.Name()
+
+
+		if obj.IsDir() {
+			// create sub-directories - recursively
+			err = CopyDir(sourcefilepointer, destinationfilepointer)
+			if err != nil {
+				fmt.Println(err)
+			}
+		} else {
+			// perform copy
+			err = CopyFile(sourcefilepointer, destinationfilepointer)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+
+	}
+	return
+}
+
+func CopyFile(source string, dest string) (err error) {
+	sourcefile, err := os.Open(source)
+	if err != nil {
+		return err
+	}
+
+	defer sourcefile.Close()
+
+	destfile, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+
+	defer destfile.Close()
+
+	_, err = io.Copy(destfile, sourcefile)
+	if err == nil {
+		sourceinfo, err := os.Stat(source)
+		if err != nil {
+			err = os.Chmod(dest, sourceinfo.Mode())
+		}
+
+	}
+
+	return
 }
 
 var jdbcFlag = "_@$# /&"
@@ -131,6 +225,10 @@ func packageToPath(pkg string) string {
 
 func (c *Content) GetTargetPath() string {
 	return c.Config.Out.Target
+}
+
+func (c *Content) GetProjectPath() string {
+	return c.Config.Proj.Target
 }
 
 func Build(path string) (*Content, error) {

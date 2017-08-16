@@ -27,4 +27,9 @@ func main() {
 	code.Serv(con)
 	code.ServImpl(con)
 	code.Xml(con)
+
+	// copy
+	if con.IsOver() {
+		con.CopyToProject()
+	}
 }
