@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"isaac/content"
+	"isaac/code"
 )
 
 func main() {
@@ -25,6 +26,6 @@ func main() {
 	con.ClearTarget()
 
 	// TODO code
-
+	code.Model(con)
 
 }

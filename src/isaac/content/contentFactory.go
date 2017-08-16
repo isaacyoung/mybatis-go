@@ -6,6 +6,7 @@ import (
 	"isaac/jdbc"
 	"isaac/config"
 	"os"
+	"strings"
 )
 
 type TableInfo struct {
@@ -19,7 +20,52 @@ type Content struct {
 }
 
 func (c *Content) ClearTarget() error {
-	return os.RemoveAll(c.Config.Out.Target)
+	return os.RemoveAll(c.GetTargetPath())
+}
+
+func (c *Content) GetModelPath() string {
+	return c.GetTargetPath() + packageToPath(c.Config.Pkg.Model)
+}
+
+var jdbcFlag = "_@$# /&"
+
+func GetModelName(tableName string) string {
+	return GetFieldName(tableName, true)
+}
+
+func GetFieldName(name string, fileUpper bool) string {
+	var result string
+	var nextUpperCase = false
+	for _, v := range name {
+		if strings.ContainsRune(jdbcFlag, v) {
+			nextUpperCase = true
+		} else if nextUpperCase {
+			result += strings.ToUpper(string(v))
+			nextUpperCase = false
+		} else {
+			result += string(v)
+		}
+	}
+	if fileUpper {
+		result = strings.ToUpper(result[0:1]) + result[1:]
+	}
+	return result
+}
+
+func GetFieldGetter(name string) string {
+	return "get" + GetModelName(name)
+}
+
+func GetFieldSetter(name string) string {
+	return "set" + GetModelName(name)
+}
+
+func packageToPath(pkg string) string {
+	return strings.Replace(pkg, ".", "/", -1)
+}
+
+func (c *Content) GetTargetPath() string {
+	return c.Config.Out.Target
 }
 
 func Build(path string) (*Content, error) {
