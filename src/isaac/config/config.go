@@ -41,6 +41,11 @@ func (c *Config) GetDataBaseFromUrl() string {
 	return url[strings.LastIndex(url,"/") + 1:strings.Index(url, "?")]
 }
 
+func (c *Config) GetDataBaseUrl() string {
+	url := c.Jdbc.Url
+	return url[strings.LastIndex(url,"//") + 2:strings.LastIndex(url, "/")]
+}
+
 func GetConfig(path string) (*Config, error) {
 	cfg, err := ini.Load(path)
 	if err != nil {

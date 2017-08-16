@@ -13,7 +13,7 @@ type Connect struct {
 func (c *Connect) connect(config *config.Config) error {
 	var err error
 	c.db, err = sql.Open("mysql",
-		config.Jdbc.UserName+":"+config.Jdbc.Password+"@/"+config.GetDataBaseFromUrl())
+		config.Jdbc.UserName+":"+config.Jdbc.Password+"@tcp("+config.GetDataBaseUrl()+")/"+config.GetDataBaseFromUrl() + "?charset=utf8")
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,6 @@ func getTables(config *config.Config, q string, v string, v2 string) ([]Table, e
 		rows, err = connect.db.Query(q, v)
 	}
 
-	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -73,6 +72,7 @@ func getTables(config *config.Config, q string, v string, v2 string) ([]Table, e
 		rows.Scan(&name, &comment)
 		result = append(result, Table{name, comment})
 	}
+	rows.Close()
 	return result, nil
 }
 
