@@ -26,4 +26,5 @@ func main() {
 	code.Dao(con)
 	code.Serv(con)
 	code.ServImpl(con)
+	code.Xml(con)
 }

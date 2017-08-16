@@ -48,6 +48,10 @@ func (c *Content) GetServiceImplPath() string {
 	return c.GetTargetPath() + packageToPath(c.Config.Pkg.Serv) + "/impl"
 }
 
+func (c *Content) GetXmlPath() string {
+	return c.GetTargetPath() + packageToPath(c.Config.Pkg.Xml)
+}
+
 var jdbcFlag = "_@$# /&"
 
 func (t *TableInfo) getModelName() string {
@@ -66,8 +70,26 @@ func (t *TableInfo) GetServiceImplName() string {
 	return t.ModelName + "ServiceImp"
 }
 
+func (t *TableInfo) GetKeys() []ColumnInfo {
+	result := []ColumnInfo{}
+	for _, v := range t.Columns {
+		if v.IsKey() {
+			result = append(result, v)
+		}
+	}
+	return result
+}
+
 func (c *ColumnInfo) getFieldName() string {
 	return getFieldName(c.Column.Name, false)
+}
+
+func (c *ColumnInfo) IsString() bool {
+	return c.ShortJavaType == "String"
+}
+
+func (c *ColumnInfo) IsDate() bool {
+	return c.ShortJavaType == "Date"
 }
 
 func getFieldName(name string, firstUpper bool) string {
@@ -97,6 +119,10 @@ func (c *ColumnInfo) GetFieldGetter() string {
 func (c *ColumnInfo) GetFieldSetter() string {
 	name := c.getFieldName()
 	return "set" + strings.ToUpper(name[0:1]) + name[1:]
+}
+
+func (c *ColumnInfo) IsKey() bool {
+	return c.Column.Key
 }
 
 func packageToPath(pkg string) string {
