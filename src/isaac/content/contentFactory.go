@@ -40,6 +40,14 @@ func (c *Content) GetDaoPath() string {
 	return c.GetTargetPath() + packageToPath(c.Config.Pkg.Dao)
 }
 
+func (c *Content) GetServicePath() string {
+	return c.GetTargetPath() + packageToPath(c.Config.Pkg.Serv)
+}
+
+func (c *Content) GetServiceImplPath() string {
+	return c.GetTargetPath() + packageToPath(c.Config.Pkg.Serv) + "/impl"
+}
+
 var jdbcFlag = "_@$# /&"
 
 func (t *TableInfo) getModelName() string {
@@ -48,6 +56,14 @@ func (t *TableInfo) getModelName() string {
 
 func (t *TableInfo) GetDaoName() string {
 	return t.ModelName + "Mapper"
+}
+
+func (t *TableInfo) GetServiceName() string {
+	return t.ModelName + "Service"
+}
+
+func (t *TableInfo) GetServiceImplName() string {
+	return t.ModelName + "ServiceImp"
 }
 
 func (c *ColumnInfo) getFieldName() string {

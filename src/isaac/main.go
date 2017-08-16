@@ -21,7 +21,9 @@ func main() {
 
 	con.ClearTarget()
 
-	// TODO code
+	// code
 	code.Model(con)
 	code.Dao(con)
+	code.Serv(con)
+	code.ServImpl(con)
 }

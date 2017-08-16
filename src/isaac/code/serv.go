@@ -1,4 +1,4 @@
-// generate Mapper.java
+// generate Service.java
 package code
 
 import (
@@ -8,20 +8,20 @@ import (
 	"sort"
 )
 
-func Dao(con *content.Content) {
-	os.MkdirAll(con.GetDaoPath(), os.ModeDir)
+func Serv(con *content.Content) {
+	os.MkdirAll(con.GetServicePath(), os.ModeDir)
 
 	for _, t := range con.Tables {
-		file, err := os.Create(con.GetDaoPath() + "/" + t.GetDaoName() + ".java")
+		file, err := os.Create(con.GetServicePath() + "/" + t.GetServiceName() + ".java")
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		file.WriteString("package " + con.Config.Pkg.Dao + ";\n\n")
+		file.WriteString("package " + con.Config.Pkg.Serv + ";\n\n")
 
 		imports := []string{}
-		imports = append(imports, "com.cdsq.manage.base.BaseMapper")
+		imports = append(imports, "com.cdsq.manage.base.BaseService")
 		imports = append(imports, con.Config.Pkg.Model+"."+t.ModelName)
 		sort.Strings(imports)
 		if imports != nil {
@@ -34,7 +34,7 @@ func Dao(con *content.Content) {
 		file.WriteString("/**\n")
 		file.WriteString(" * " + t.Table.Comment + "\n")
 		file.WriteString(" */\n")
-		file.WriteString("public interface " + t.GetDaoName() + " extends BaseMapper<" + t.ModelName + "> {\n")
+		file.WriteString("public interface " + t.GetServiceName() + " extends BaseService<" + t.ModelName + "> {\n")
 
 		file.WriteString("}")
 		file.Close()
