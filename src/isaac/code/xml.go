@@ -48,7 +48,7 @@ func Xml(con *content.Content) {
 		file.WriteString(`  </select>` + "\n\n")
 
 		// deleteById
-		file.WriteString(`  <delete id="deleteById" parameterType="java.lang.Integer"` + "\n")
+		file.WriteString(`  <delete id="deleteById" parameterType="java.lang.Integer">` + "\n")
 		file.WriteString(`    delete from ` + t.Table.Name + "\n")
 		for i, v := range keys {
 			if i == 0 {
