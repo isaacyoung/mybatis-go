@@ -22,8 +22,10 @@ func ServImpl(con *content.Content) {
 
 		imports := []string{}
 		imports = append(imports, "com.cdsq.manage.base.BaseServiceImp")
+		imports = append(imports, "org.springframework.stereotype.Service")
 		imports = append(imports, con.Config.Pkg.Model+"."+t.ModelName)
 		imports = append(imports, con.Config.Pkg.Dao+"."+t.GetDaoName())
+		imports = append(imports, con.Config.Pkg.Serv+"."+t.GetServiceName())
 		sort.Strings(imports)
 		if imports != nil {
 			for _, v := range imports {
