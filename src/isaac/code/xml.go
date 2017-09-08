@@ -87,7 +87,7 @@ func Xml(con *content.Content) {
 		str := `      <if test="sqlCondition != null and sqlCondition.size > 0">
         and
         <foreach collection="sqlCondition" index="index" item="condition" separator=" and ">
-          #{condition}
+          ${condition}
         </foreach>
       </if>`
 		file.WriteString(str + "\n")
