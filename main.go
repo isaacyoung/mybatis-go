@@ -6,8 +6,8 @@ package main
 
 import (
 	"fmt"
-	"isaac/content"
-	"isaac/code"
+	"mybatis-go/content"
+	"mybatis-go/code"
 )
 
 func main() {

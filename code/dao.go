@@ -2,7 +2,7 @@
 package code
 
 import (
-	"isaac/content"
+	"mybatis-go/content"
 	"os"
 	"fmt"
 	"sort"

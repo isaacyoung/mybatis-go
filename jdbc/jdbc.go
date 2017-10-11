@@ -3,7 +3,7 @@ package jdbc
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"isaac/config"
+	"mybatis-go/config"
 )
 
 type Connect struct {

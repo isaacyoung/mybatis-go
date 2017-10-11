@@ -3,8 +3,8 @@ package content
 
 import (
 	"fmt"
-	"isaac/jdbc"
-	"isaac/config"
+	"mybatis-go/jdbc"
+	"mybatis-go/config"
 	"os"
 	"strings"
 	"io"
